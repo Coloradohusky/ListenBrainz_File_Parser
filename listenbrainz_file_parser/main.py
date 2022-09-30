@@ -5,7 +5,9 @@
 # Mr. Self Destruct (The Downward Spiral (deluxe edition)) should return The Downward Spiral (deluxe edition)
 
 # Make sure to change to 'from .argparser import parse_args' when uploading
-from argparser import parse_args
+from .argparser import parse_args
+import json
+import os
 
 
 def get_version():
@@ -16,4 +18,17 @@ def main():
     args = parse_args()
     file = args.file
     config = args.config
-    print(config)
+    if config is None:
+        config = os.path.expanduser('~') + "/config_listenbrainz.json"
+    try:
+        config = json.load(open(config))
+    except FileNotFoundError:
+        api_token = input("Enter in your ListenBrainz API Token (https://listenbrainz.org/profile/): ")
+        json_config = {
+            "api_token": api_token
+        }
+        with open(config, 'w+') as f:
+            json.dump(json_config, f)
+        config = json.load(open(config))
+    api_token = config['api_token']
+    print(api_token)
