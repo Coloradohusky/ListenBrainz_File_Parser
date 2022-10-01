@@ -8,6 +8,12 @@
 from .argparser import parse_args
 import json
 import os
+import sqlite3
+import pandas as pd
+
+from .parse.jellyfin import jellyfin_to_ods
+from .parse.tautulli import tautulli_to_ods
+from .submit.submit import import_listens
 
 
 def get_version():
@@ -35,9 +41,26 @@ def set_config(config):
     return config
 
 
+def detect_filetype(file, api_token):
+    con = sqlite3.connect(file)
+    value = (pd.read_sql("SELECT * FROM sqlite_master", con).values.tolist()[0][1])
+    if value == 'version_info':
+        media_player = 'Tautulli'
+        ods = tautulli_to_ods(file)
+    elif value == 'PlaybackActivity':
+        media_player = 'Jellyfin'
+        ods = jellyfin_to_ods(file)
+    else:
+        print('Filetype not currently supported.')
+        return -1
+
+    # import_listens(ods, media_player, api_token)
+
+
 def main():
     args = parse_args()
     file = args.file
     config = set_config(args.config)
     api_token = get_api_token(config)
     print(api_token)
+    detect_filetype(file, api_token)

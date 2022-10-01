@@ -19,3 +19,4 @@ def tautulli_to_ods(tautulli_db):
     data['year'] = data['year'].astype("str")
     print(data.head(15))
     data.to_excel(tautulli_ods, index=False)
+    return tautulli_ods

@@ -23,3 +23,4 @@ def jellyfin_to_ods(jellyfin_db):
     data.drop(['ItemType', 'DateCreated'], axis=1, inplace=True)
     data = data.rename(columns={"PlayDuration": "duration"})
     data.to_excel(jellyfin_ods, index=False)
+    return jellyfin_ods
