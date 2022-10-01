@@ -50,7 +50,7 @@ def make_listen(listen_series, media_player):
     return listen_json
 
 
-def import_listens(file, media_player):
+def import_listens(file, media_player, api_token):
     data = pd.read_excel(file, dtype="str")
     print(data.dtypes)
     # how many listens to submit to ListenBrainz at once
@@ -60,5 +60,5 @@ def import_listens(file, media_player):
     for i in range(0, int(len(data) / listen_chunk) + 1):
         data_chunk = (data[i * listen_chunk:(i * listen_chunk) + listen_chunk])
         payload = make_payload(data_chunk, media_player)
-        submit_to_listenbrainz(payload)
+        submit_to_listenbrainz(payload, api_token)
     print('Done')
