@@ -5,19 +5,20 @@ import time
 import sys
 
 
-def submit_to_listenbrainz(payload):
+def submit_to_listenbrainz(payload, api_token):
     listenbrainz_submit = {
         "listen_type": "import",
         "payload": payload
     }
     listenbrainz_submit = json.dumps(listenbrainz_submit)
     r = requests.post("https://api.listenbrainz.org/1/submit-listens",
-                      headers={'Authorization': listenbrainz_token}, data=listenbrainz_submit)
+                      headers={'Authorization': api_token}, data=listenbrainz_submit)
     print(r)
     print(r.json())
     if r.json()['status'] != 'ok':
         sys.exit()
-    time.sleep(3) # just a guess
+    # set with --timeout
+    time.sleep(3)
     return 0
 
 
@@ -53,6 +54,8 @@ def import_listens(file, media_player):
     data = pd.read_excel(file, dtype="str")
     print(data.dtypes)
     # how many listens to submit to ListenBrainz at once
+    # set with --max-batch
+    # add in some way to set --max-total
     listen_chunk = 200
     for i in range(0, int(len(data) / listen_chunk) + 1):
         data_chunk = (data[i * listen_chunk:(i * listen_chunk) + listen_chunk])

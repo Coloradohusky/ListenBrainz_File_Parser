@@ -14,21 +14,30 @@ def get_version():
     return "0.0.1"
 
 
-def main():
-    args = parse_args()
-    file = args.file
-    config = args.config
+def get_api_token(config):
+    api_token = config['api_token']
+    return api_token
+
+
+def set_config(config):
     if config is None:
         config = os.path.expanduser('~') + "/config_listenbrainz.json"
     try:
         config = json.load(open(config))
     except FileNotFoundError:
-        api_token = input("Enter in your ListenBrainz API Token (https://listenbrainz.org/profile/): ")
+        token = input("Enter in your ListenBrainz API Token (https://listenbrainz.org/profile/): ")
         json_config = {
-            "api_token": api_token
+            "api_token": token
         }
         with open(config, 'w+') as f:
             json.dump(json_config, f)
-        config = json.load(open(config))
-    api_token = config['api_token']
+    # returns config as dict
+    return config
+
+
+def main():
+    args = parse_args()
+    file = args.file
+    config = set_config(args.config)
+    api_token = get_api_token(config)
     print(api_token)
