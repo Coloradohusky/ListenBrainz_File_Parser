@@ -28,6 +28,12 @@ def parse_args():
             "Number of seconds to wait between batches."
         )
     )
+    parser.add_argument(
+        "--api-token",
+        help=(
+            "Specify your ListenBrainz API Token (https://listenbrainz.org/profile/)"
+        )
+    )
 
     args = parser.parse_args()
     return args

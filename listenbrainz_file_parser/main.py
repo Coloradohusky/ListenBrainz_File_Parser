@@ -20,11 +20,6 @@ def get_version():
     return "0.0.1"
 
 
-def get_api_token(config):
-    api_token = config['api_token']
-    return api_token
-
-
 def set_config(config):
     if config is None:
         config = os.path.expanduser('~') + "/config_listenbrainz.json"
@@ -32,16 +27,29 @@ def set_config(config):
         config = json.load(open(config))
     except FileNotFoundError:
         token = input("Enter in your ListenBrainz API Token (https://listenbrainz.org/profile/): ")
+        max_batch = input("Enter in how many listens you want to send per request (default 200): ")
+        max_total = input("Enter in how many listens you want to send in total (default all): ")
+        timeout = input("Enter in how many seconds you wish to wait between requests (default 3s): ")
+        if max_batch == '':
+            max_batch = 200
+        if max_total == '':
+            max_total = -1
+        if timeout == '':
+            timeout = 3
         json_config = {
-            "api_token": token
+            "api_token": token,
+            "max_batch": max_batch,
+            "max_total": max_total,
+            "timeout": timeout
         }
         with open(config, 'w+') as f:
             json.dump(json_config, f)
+        config = json.load(open(config))
     # returns config as dict
     return config
 
 
-def detect_filetype(file, api_token):
+def detect_filetype(file, api_token, max_batch, max_total, timeout):
     con = sqlite3.connect(file)
     value = (pd.read_sql("SELECT * FROM sqlite_master", con).values.tolist()[0][1])
     if value == 'version_info':
@@ -54,13 +62,32 @@ def detect_filetype(file, api_token):
         print('Filetype not currently supported.')
         return -1
 
-    # import_listens(ods, media_player, api_token)
+    import_listens(ods, media_player, api_token, max_batch, max_total, timeout)
 
 
 def main():
     args = parse_args()
     file = args.file
     config = set_config(args.config)
-    api_token = get_api_token(config)
-    print(api_token)
-    detect_filetype(file, api_token)
+    
+    if args.api_token is None:
+        api_token = config.get('api_token')
+    else:
+        api_token = args.api_token
+
+    if args.max_batch is None:
+        max_batch = int(config.get('max_batch'))
+    else:
+        max_batch = int(args.max_batch)
+
+    if args.max_total is None:
+        max_total = int(config.get('max_total'))
+    else:
+        max_total = int(args.max_total)
+
+    if args.timeout is None:
+        timeout = int(config.get('timeout'))
+    else:
+        timeout = int(args.timeout)
+
+    detect_filetype(file, api_token, max_batch, max_total, timeout)

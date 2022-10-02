@@ -13,10 +13,13 @@ def tautulli_to_ods(tautulli_db):
     session_data = pd.read_sql("SELECT started FROM session_history", con)
     data = pd.concat([data, session_data], axis=1, join='inner')
     data = data.loc[data['media_type'] == 'track']
+    # remove blank tracks
+    data = data.loc[data['title'] != '']
+    data = data.loc[data['parent_title'] != '']
+    data = data.loc[data['grandparent_title'] != '']
     data.drop('media_type', axis=1, inplace=True)
     data = data.rename(columns={"title": "track_name", "parent_title": "release_name",
                                 "grandparent_title": "artist_name", "started": "listened_at"})
     data['year'] = data['year'].astype("str")
-    print(data.head(15))
     data.to_excel(tautulli_ods, index=False)
     return tautulli_ods

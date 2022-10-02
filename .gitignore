@@ -11,3 +11,4 @@ listenbrainz_file_parser.egg-info/dependency_links.txt
 listenbrainz_file_parser.egg-info/requires.txt
 listenbrainz_file_parser/parse/__pycache__/tautulli.cpython-310.pyc
 listenbrainz_file_parser/parse/__pycache__/jellyfin.cpython-310.pyc
+listenbrainz_file_parser/submit/__pycache__/submit.cpython-310.pyc

@@ -1,4 +1,3 @@
-from os import path
 from typing import List
 
 from setuptools import setup, find_packages

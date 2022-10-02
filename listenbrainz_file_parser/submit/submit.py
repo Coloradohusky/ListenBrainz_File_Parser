@@ -5,20 +5,21 @@ import time
 import sys
 
 
-def submit_to_listenbrainz(payload, api_token):
+def submit_to_listenbrainz(payload, api_token, timeout):
     listenbrainz_submit = {
         "listen_type": "import",
         "payload": payload
     }
     listenbrainz_submit = json.dumps(listenbrainz_submit)
+    print(api_token)
+    print(type(api_token))
     r = requests.post("https://api.listenbrainz.org/1/submit-listens",
-                      headers={'Authorization': api_token}, data=listenbrainz_submit)
+                      headers={'Authorization': 'Token ' + api_token}, data=listenbrainz_submit)
     print(r)
     print(r.json())
     if r.json()['status'] != 'ok':
         sys.exit()
-    # set with --timeout
-    time.sleep(3)
+    time.sleep(timeout)
     return 0
 
 
@@ -50,15 +51,14 @@ def make_listen(listen_series, media_player):
     return listen_json
 
 
-def import_listens(file, media_player, api_token):
+def import_listens(file, media_player, api_token, max_batch, max_total, timeout):
     data = pd.read_excel(file, dtype="str")
-    print(data.dtypes)
     # how many listens to submit to ListenBrainz at once
-    # set with --max-batch
     # add in some way to set --max-total
-    listen_chunk = 200
-    for i in range(0, int(len(data) / listen_chunk) + 1):
-        data_chunk = (data[i * listen_chunk:(i * listen_chunk) + listen_chunk])
+    if max_total == -1:
+        max_total = len(data)
+    for i in range(0, int(max_total / max_batch) + 1):
+        data_chunk = (data[i * max_batch:(i * max_batch) + max_batch])
         payload = make_payload(data_chunk, media_player)
-        submit_to_listenbrainz(payload, api_token)
+        submit_to_listenbrainz(payload, api_token, timeout)
     print('Done')
