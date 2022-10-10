@@ -1,10 +1,8 @@
 # jellyfin_to_ods()
 # tautulli_to_ods()
-# import_listens(tautulli_ods, "Tautulli") it works!
 # (e)y(e)s w/o a %brain% (Eternal Home) should return Eternal Home
 # Mr. Self Destruct (The Downward Spiral (deluxe edition)) should return The Downward Spiral (deluxe edition)
 
-# Make sure to change to 'from .argparser import parse_args' when uploading
 from .argparser import parse_args
 import json
 import os
@@ -18,7 +16,7 @@ from .submit.submit import import_listens
 
 
 def get_version():
-    return "0.0.1"
+    return "0.0.2"
 
 
 def set_config(config):
@@ -67,7 +65,6 @@ def detect_filetype(file, api_token, max_batch, max_total, timeout):
     elif file.startswith('scrobbles-'):  # a very weak way to detect which filetype it is, but oh well
         media_player = 'Last.FM'
         ods = lastfm_to_ods(file)
-        return -1
     else:
         print('Filetype not currently supported.')
         return -1

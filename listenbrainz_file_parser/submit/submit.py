@@ -11,8 +11,6 @@ def submit_to_listenbrainz(payload, api_token, timeout):
         "payload": payload
     }
     listenbrainz_submit = json.dumps(listenbrainz_submit)
-    print(api_token)
-    print(type(api_token))
     r = requests.post("https://api.listenbrainz.org/1/submit-listens",
                       headers={'Authorization': 'Token ' + api_token}, data=listenbrainz_submit)
     print(r)
@@ -40,13 +38,15 @@ def make_listen(listen_series, media_player):
             "release_name": listen_series['release_name'],
             "additional_info": {
                 "media_player": media_player,
-                "submission_client": "DataBase Listen Uploader by Coloradohusky",
+                "submission_client": "ListenBrainz File Parser by Coloradohusky",
             }
         }
     }
     for arg in listen_series.index:
+        # NaNs are floats, not NoneType
+        # might cause issues in the future with genuine floats, but try to keep things as ints I guess
         if (arg not in ['release_name', 'track_name', 'artist_name', 'listened_at']) and \
-                (listen_series[arg] is True):
+                (not isinstance(listen_series[arg], float)):
             listen_json['track_metadata']['additional_info'][arg] = listen_series[arg]
     return listen_json
 
@@ -54,11 +54,10 @@ def make_listen(listen_series, media_player):
 def import_listens(file, media_player, api_token, max_batch, max_total, timeout):
     data = pd.read_excel(file, dtype="str")
     # how many listens to submit to ListenBrainz at once
-    # add in some way to set --max-total
     if max_total == -1:
-        max_total = len(data)
+        max_total = len(data) + 1
     for i in range(0, int(max_total / max_batch) + 1):
-        data_chunk = (data[i * max_batch:(i * max_batch) + max_batch])
+        data_chunk = (data[i * max_batch:min((i * max_batch) + max_batch, max_total)])
         payload = make_payload(data_chunk, media_player)
         submit_to_listenbrainz(payload, api_token, timeout)
     print('Done')

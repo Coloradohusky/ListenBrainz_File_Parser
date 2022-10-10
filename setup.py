@@ -32,6 +32,6 @@ setup(
             'listenbrainz_file_parser = listenbrainz_file_parser.main:main',
         ],
     },
-    python_requires='>=3.5, <4',
+    python_requires='>=3.9, <4',
     install_requires=requirements,
 )

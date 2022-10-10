@@ -4,14 +4,14 @@
 ## Working
 ### Plex / Tautulli
 - `tautulli.db`
-
-## In Progress
-### Jellyfin / Playback Reporting Plugin
-- `playback_reporting.db`
 ### last.fm / [mainstream.ghan.nl](https://mainstream.ghan.nl/export.html)
 - `scrobbles-*.csv`
 - `scrobbles-*.json`
 - `scrobbles-*.xml`
+
+## In Progress
+### Jellyfin / Playback Reporting Plugin
+- `playback_reporting.db`
 
 ## Planned
 ### snd.wave (iOS)
