@@ -13,6 +13,7 @@ import pandas as pd
 
 from .parse.jellyfin import jellyfin_to_ods
 from .parse.tautulli import tautulli_to_ods
+from .parse.lastfm import lastfm_to_ods
 from .submit.submit import import_listens
 
 
@@ -50,14 +51,23 @@ def set_config(config):
 
 
 def detect_filetype(file, api_token, max_batch, max_total, timeout):
-    con = sqlite3.connect(file)
-    value = (pd.read_sql("SELECT * FROM sqlite_master", con).values.tolist()[0][1])
-    if value == 'version_info':
-        media_player = 'Tautulli'
-        ods = tautulli_to_ods(file)
-    elif value == 'PlaybackActivity':
-        media_player = 'Jellyfin'
-        ods = jellyfin_to_ods(file)
+    print(file)
+    if file.endswith('.db'):
+        con = sqlite3.connect(file)
+        value = (pd.read_sql("SELECT * FROM sqlite_master", con).values.tolist()[0][1])
+        if value == 'version_info':
+            media_player = 'Tautulli'
+            ods = tautulli_to_ods(file)
+        elif value == 'PlaybackActivity':
+            media_player = 'Jellyfin'
+            ods = jellyfin_to_ods(file)
+        else:
+            print('Filetype not currently supported.')
+            return -1
+    elif file.startswith('scrobbles-'):  # a very weak way to detect which filetype it is, but oh well
+        media_player = 'Last.FM'
+        ods = lastfm_to_ods(file)
+        return -1
     else:
         print('Filetype not currently supported.')
         return -1
