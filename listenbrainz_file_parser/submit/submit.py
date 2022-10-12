@@ -15,7 +15,14 @@ def submit_to_listenbrainz(payload, api_token, timeout):
                       headers={'Authorization': 'Token ' + api_token}, data=listenbrainz_submit)
     print(r)
     print(r.json())
-    if r.json()['status'] != 'ok':
+    try:
+        if r.json()['status'] != 'ok':
+            sys.exit()
+    except KeyError:
+        # if there's an error (503, 400, etc.) it will print some of the last chunk of data
+        # so that the user can format their data as to not resubmit the same track twice
+        # (not that ListenBrainz cares, they handle dupes well)
+        print(json.dumps(listenbrainz_submit)[:300])
         sys.exit()
     time.sleep(timeout)
     return 0
