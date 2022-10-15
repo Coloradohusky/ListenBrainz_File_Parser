@@ -10,13 +10,14 @@ import sqlite3
 import pandas as pd
 
 from .parse.jellyfin import jellyfin_to_ods
-from .parse.tautulli import tautulli_to_ods
 from .parse.lastfm import lastfm_to_ods
+from .parse.rockbox import rockbox_to_ods
+from .parse.tautulli import tautulli_to_ods
 from .submit.submit import import_listens
 
 
 def get_version():
-    return "0.0.2"
+    return "0.0.3"
 
 
 def set_config(config):
@@ -49,7 +50,13 @@ def set_config(config):
 
 
 def detect_filetype(file, api_token, max_batch, max_total, timeout):
-    print(file)
+    if "/" in file:
+        stripped_file = file.split("/")[-1]
+    elif "\\" in file:
+        stripped_file = file.split("\\")[-1]
+    else:
+        stripped_file = file
+    print(stripped_file)
     if file.endswith('.db'):
         con = sqlite3.connect(file)
         value = (pd.read_sql("SELECT * FROM sqlite_master", con).values.tolist()[0][1])
@@ -62,9 +69,13 @@ def detect_filetype(file, api_token, max_batch, max_total, timeout):
         else:
             print('Filetype not currently supported.')
             return -1
-    elif file.startswith('scrobbles-'):  # a very weak way to detect which filetype it is, but oh well
+    # a very weak way to detect Last.FM filetype, but oh well
+    elif stripped_file.startswith('scrobbles-'):
         media_player = 'Last.FM'
         ods = lastfm_to_ods(file)
+    elif stripped_file.endswith('.log'):
+        media_player = 'RockBox'
+        ods = rockbox_to_ods(file)
     else:
         print('Filetype not currently supported.')
         return -1

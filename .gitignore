@@ -13,3 +13,4 @@ listenbrainz_file_parser/parse/__pycache__/tautulli.cpython-310.pyc
 listenbrainz_file_parser/parse/__pycache__/jellyfin.cpython-310.pyc
 listenbrainz_file_parser/submit/__pycache__/submit.cpython-310.pyc
 listenbrainz_file_parser/parse/__pycache__/lastfm.cpython-310.pyc
+listenbrainz_file_parser/parse/__pycache__/rockbox.cpython-310.pyc

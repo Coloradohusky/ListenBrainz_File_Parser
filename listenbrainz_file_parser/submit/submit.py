@@ -45,6 +45,7 @@ def make_listen(listen_series, media_player):
             "release_name": listen_series['release_name'],
             "additional_info": {
                 "media_player": media_player,
+                # would like to add get_version to submission_client, but gives me a circular import
                 "submission_client": "ListenBrainz File Parser by Coloradohusky",
             }
         }
