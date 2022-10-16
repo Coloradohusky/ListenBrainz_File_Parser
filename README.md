@@ -46,7 +46,6 @@ options:
 ### Planned
 #### snd.wave (iOS)
 #### SongStats (iOS)
-#### [Foobar2000 / Enhanced Playback Statistics](https://www.foobar2000.org/components/view/foo_enhanced_playcount)
 #### 
 
 ### Send in suggestions, with attached files!
