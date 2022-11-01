@@ -17,7 +17,7 @@ from .submit.submit import import_listens
 
 
 def get_version():
-    return "0.0.3"
+    return "0.0.4"
 
 
 def set_config(config):

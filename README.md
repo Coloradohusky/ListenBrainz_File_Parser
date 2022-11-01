@@ -38,10 +38,11 @@ options:
 - `scrobbles-*.xml`
 #### [RockBox](https://community.metabrainz.org/t/dealing-with-scrobbler-log-files/)
 - `.scrobbler.log`
-
-### In Progress
 #### Jellyfin / Playback Reporting Plugin
 - `playback_reporting.db`
+
+### In Progress
+None
 
 ### Planned
 #### snd.wave (iOS)
