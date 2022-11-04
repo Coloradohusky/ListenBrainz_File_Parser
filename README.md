@@ -30,23 +30,23 @@ options:
 ## List of Music Trackers
 
 ### Working
-#### Plex / Tautulli
+#### [Plex](https://www.plex.tv/) / [Tautulli](https://tautulli.com/)
 - `tautulli.db`
-#### last.fm / [mainstream.ghan.nl](https://mainstream.ghan.nl/export.html)
+#### [last.fm](https://www.last.fm/home) / [mainstream.ghan.nl](https://mainstream.ghan.nl/export.html)
 - `scrobbles-*.csv`
 - `scrobbles-*.json`
 - `scrobbles-*.xml`
 #### [RockBox](https://community.metabrainz.org/t/dealing-with-scrobbler-log-files/)
 - `.scrobbler.log`
-#### Jellyfin / Playback Reporting Plugin
+#### [Jellyfin](https://jellyfin.org/) / [Playback Reporting Plugin](https://github.com/jellyfin/jellyfin-plugin-playbackreporting)
 - `playback_reporting.db`
 
 ### In Progress
 None
 
 ### Planned
-#### snd.wave (iOS)
-#### SongStats (iOS)
+#### [snd.wave (iOS)](https://sndwave.app/)
+#### [SongStats (iOS)](https://apps.apple.com/us/app/song-stats-for-apple-music/id1450329823)
 #### 
 
 ### Send in suggestions, with attached files!
