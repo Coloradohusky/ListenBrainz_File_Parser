@@ -25,7 +25,8 @@ def jellyfin_to_ods(jellyfin_db):
     data['listened_at'] = data['listened_at'].astype("str").str[:-9]
     # a really hacky way to convert from PST/PDT to UTC (adds 25200 seconds, or 7 hours)
     # will need to make more user-customizable, to allow for different timezones
-    data['listened_at'] = data['listened_at'].astype("int64") + 25200
+    # also breaks with daylight savings time, as I learned recently
+    data['listened_at'] = data['listened_at'].astype("int64") + 21600
     print(data.info())
     data.drop(['ItemType', 'DateCreated', 'ItemName'], axis=1, inplace=True)
     data = data.rename(columns={"PlayDuration": "duration"})
