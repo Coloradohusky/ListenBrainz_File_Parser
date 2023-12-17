@@ -66,15 +66,17 @@ def detect_filetype(file, api_token, max_batch, max_total, timeout):
         stripped_file = file.split("\\")[-1]
     else:
         stripped_file = file
-    print(stripped_file)
+    print(f"File: {stripped_file}")
     if file.endswith('.db'):
         con = sqlite3.connect(file)
         value = (pd.read_sql("SELECT * FROM sqlite_master", con).values.tolist()[0][1])
         if value == 'version_info':
             media_player = 'Tautulli'
+            print(f"Found {media_player} File.")
             ods, data = tautulli_to_ods(file)
         elif value == 'PlaybackActivity':
             media_player = 'Jellyfin'
+            print(f"Found {media_player} File.")
             ods, data = jellyfin_to_ods(file)
         else:
             print('Filetype not currently supported.')
@@ -82,13 +84,15 @@ def detect_filetype(file, api_token, max_batch, max_total, timeout):
     # a very weak way to detect Last.FM filetype, but oh well
     elif stripped_file.startswith('scrobbles-'):
         media_player = 'Last.FM'
+        print(f"Found {media_player} File.")
         ods, data = lastfm_to_ods(file)
     elif stripped_file.startswith('endsong_'):
         media_player = 'Spotify'
-        print("Spotify")
+        print(f"Found {media_player} File.")
         ods, data = spotify_to_ods(file)
     elif stripped_file.endswith('.log'):
         media_player = 'RockBox'
+        print(f"Found {media_player} File.")
         ods, data = rockbox_to_ods(file)
     else:
         print('Filetype not currently supported.')
