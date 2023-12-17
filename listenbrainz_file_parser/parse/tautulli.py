@@ -22,4 +22,4 @@ def tautulli_to_ods(tautulli_db):
                                 "grandparent_title": "artist_name", "started": "listened_at"})
     data['year'] = data['year'].astype("str")
     data.to_excel(tautulli_ods, index=False)
-    return tautulli_ods
+    return tautulli_ods, data

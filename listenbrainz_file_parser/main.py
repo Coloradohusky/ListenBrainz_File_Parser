@@ -3,18 +3,28 @@
 # (e)y(e)s w/o a %brain% (Eternal Home) should return Eternal Home
 # Mr. Self Destruct (The Downward Spiral (deluxe edition)) should return The Downward Spiral (deluxe edition)
 
-from .argparser import parse_args
 import json
 import os
 import sqlite3
 import pandas as pd
 
-from .parse.jellyfin import jellyfin_to_ods
-from .parse.lastfm import lastfm_to_ods
-from .parse.rockbox import rockbox_to_ods
-from .parse.tautulli import tautulli_to_ods
-from .submit.submit import import_listens
-from .parse.spotify import spotify_to_ods
+try:
+    from .argparser import parse_args
+    from .parse.jellyfin import jellyfin_to_ods
+    from .parse.lastfm import lastfm_to_ods
+    from .parse.rockbox import rockbox_to_ods
+    from .parse.tautulli import tautulli_to_ods
+    from .submit.submit import import_listens
+    from .parse.spotify import spotify_to_ods
+except ImportError:
+    from argparser import parse_args
+    from parse.jellyfin import jellyfin_to_ods
+    from parse.lastfm import lastfm_to_ods
+    from parse.rockbox import rockbox_to_ods
+    from parse.tautulli import tautulli_to_ods
+    from submit.submit import import_listens
+    from parse.spotify import spotify_to_ods
+
 
 def get_version():
     return "0.0.5"
@@ -62,36 +72,36 @@ def detect_filetype(file, api_token, max_batch, max_total, timeout):
         value = (pd.read_sql("SELECT * FROM sqlite_master", con).values.tolist()[0][1])
         if value == 'version_info':
             media_player = 'Tautulli'
-            ods = tautulli_to_ods(file)
+            ods, data = tautulli_to_ods(file)
         elif value == 'PlaybackActivity':
             media_player = 'Jellyfin'
-            ods = jellyfin_to_ods(file)
+            ods, data = jellyfin_to_ods(file)
         else:
             print('Filetype not currently supported.')
             return -1
     # a very weak way to detect Last.FM filetype, but oh well
     elif stripped_file.startswith('scrobbles-'):
         media_player = 'Last.FM'
-        ods = lastfm_to_ods(file)
+        ods, data = lastfm_to_ods(file)
     elif stripped_file.startswith('endsong_'):
         media_player = 'Spotify'
         print("Spotify")
-        ods = spotify_to_ods(file)
+        ods, data = spotify_to_ods(file)
     elif stripped_file.endswith('.log'):
         media_player = 'RockBox'
-        ods = rockbox_to_ods(file)
+        ods, data = rockbox_to_ods(file)
     else:
         print('Filetype not currently supported.')
         return -1
 
-    import_listens(ods, media_player, api_token, max_batch, max_total, timeout)
+    import_listens(ods, media_player, api_token, max_batch, max_total, timeout, data)
 
 
 def main():
     args = parse_args()
     file = args.file
     config = set_config(args.config)
-    
+
     if args.api_token is None:
         api_token = config.get('api_token')
     else:
@@ -113,3 +123,7 @@ def main():
         timeout = int(args.timeout)
 
     detect_filetype(file, api_token, max_batch, max_total, timeout)
+
+
+if __name__ == '__main__':
+    main()

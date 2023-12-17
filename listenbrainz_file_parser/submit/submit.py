@@ -3,6 +3,7 @@ import json
 import requests
 import time
 import sys
+import progressbar as pb
 
 
 def submit_to_listenbrainz(payload, api_token, timeout):
@@ -61,12 +62,13 @@ def make_listen(listen_series, media_player):
     return listen_json
 
 
-def import_listens(file, media_player, api_token, max_batch, max_total, timeout):
-    data = pd.read_excel(file, dtype="str")
+def import_listens(file, media_player, api_token, max_batch, max_total, timeout, data=None):
+    if data is None:
+        data = pd.read_excel(file, dtype="str")
     # how many listens to submit to ListenBrainz at once
     if max_total == -1:
         max_total = len(data) + 1
-    for i in range(0, int(max_total / max_batch) + 1):
+    for i in pb.progressbar(range(0, int(max_total / max_batch) + 1), prefix="Submitting...", redirect_stdout=True):
         data_chunk = (data[i * max_batch:min((i * max_batch) + max_batch, max_total)])
         payload = make_payload(data_chunk, media_player)
         submit_to_listenbrainz(payload, api_token, timeout)

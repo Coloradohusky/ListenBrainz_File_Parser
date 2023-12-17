@@ -18,4 +18,4 @@ def rockbox_to_ods(rockbox_file):
     data = data.loc[data['track_name'] != '']
     data = data.dropna(subset=["artist_name", "release_name", "track_name"])
     data.to_excel(rockbox_ods, index=False)
-    return rockbox_ods
+    return rockbox_ods, data
