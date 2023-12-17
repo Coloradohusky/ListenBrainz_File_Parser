@@ -35,4 +35,4 @@ def lastfm_to_ods(lastfm_file):
     else:  # this shouldn't happen... right?
         return -1
     data.to_excel(lastfm_ods, index=False)
-    return lastfm_ods
+    return lastfm_ods, data

@@ -3,6 +3,7 @@ import json
 import requests
 import time
 import sys
+import progressbar as pb
 
 
 def submit_to_listenbrainz(payload, api_token, timeout):
@@ -13,8 +14,7 @@ def submit_to_listenbrainz(payload, api_token, timeout):
     listenbrainz_submit = json.dumps(listenbrainz_submit)
     r = requests.post("https://api.listenbrainz.org/1/submit-listens",
                       headers={'Authorization': 'Token ' + api_token}, data=listenbrainz_submit)
-    print(r)
-    print(r.json())
+    print(f"{r.status_code} - {r.json()}")
     try:
         if r.json()['status'] != 'ok':
             sys.exit()
@@ -23,6 +23,9 @@ def submit_to_listenbrainz(payload, api_token, timeout):
         # so that the user can format their data as to not resubmit the same track twice
         # (not that ListenBrainz cares, they handle dupes well)
         print(json.dumps(listenbrainz_submit)[:300])
+        # Write Error JSON to a file for better Debug
+        with open("error.json", "w") as file:
+            file.writelines(listenbrainz_submit)
         sys.exit()
     time.sleep(timeout)
     return 0
@@ -59,12 +62,13 @@ def make_listen(listen_series, media_player):
     return listen_json
 
 
-def import_listens(file, media_player, api_token, max_batch, max_total, timeout):
-    data = pd.read_excel(file, dtype="str")
+def import_listens(file, media_player, api_token, max_batch, max_total, timeout, data=None):
+    if data is None:
+        data = pd.read_excel(file, dtype="str")
     # how many listens to submit to ListenBrainz at once
     if max_total == -1:
         max_total = len(data) + 1
-    for i in range(0, int(max_total / max_batch) + 1):
+    for i in pb.progressbar(range(0, int(max_total / max_batch) + 1), prefix="Submitting...", redirect_stdout=True):
         data_chunk = (data[i * max_batch:min((i * max_batch) + max_batch, max_total)])
         payload = make_payload(data_chunk, media_player)
         submit_to_listenbrainz(payload, api_token, timeout)
