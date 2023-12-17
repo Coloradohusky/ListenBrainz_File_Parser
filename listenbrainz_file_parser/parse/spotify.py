@@ -7,10 +7,9 @@ import progressbar
 def spotify_to_ods(spotify_file):
     spotify_ods = spotify_file + '.ods'
     if spotify_file.endswith('.json'):
-        # splits file into a list of around 200 JSONs per line
         json_list = json.load(open(spotify_file, encoding='utf-8'))
         data = pd.DataFrame()
-        for i in json_list:
+        for i in progressbar.progressbar(json_list,prefix=spotify_file):
             if i["incognito_mode"] or i["master_metadata_track_name"] is None or i["master_metadata_track_name"] is None or i["master_metadata_track_name"] is None :
                 continue
             i["ts"] = datetime.datetime.strptime(i["ts"], "%Y-%m-%dT%H:%M:%SZ").timestamp()
