@@ -40,6 +40,8 @@ options:
 - `.scrobbler.log`
 #### [Jellyfin](https://jellyfin.org/) / [Playback Reporting Plugin](https://github.com/jellyfin/jellyfin-plugin-playbackreporting)
 - `playback_reporting.db`
+#### [Spotify Extended History](https://www.spotify.com/account/privacy/) / [Understanding Your Spotify Data](https://support.spotify.com/us/article/understanding-my-data/)
+- `endsong_*.json`
 
 ### In Progress
 None
