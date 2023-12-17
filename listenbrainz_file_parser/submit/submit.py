@@ -13,8 +13,7 @@ def submit_to_listenbrainz(payload, api_token, timeout):
     listenbrainz_submit = json.dumps(listenbrainz_submit)
     r = requests.post("https://api.listenbrainz.org/1/submit-listens",
                       headers={'Authorization': 'Token ' + api_token}, data=listenbrainz_submit)
-    print(r)
-    print(r.json())
+    print(f"{r.status_code} - {r.json()}")
     try:
         if r.json()['status'] != 'ok':
             sys.exit()
@@ -23,6 +22,9 @@ def submit_to_listenbrainz(payload, api_token, timeout):
         # so that the user can format their data as to not resubmit the same track twice
         # (not that ListenBrainz cares, they handle dupes well)
         print(json.dumps(listenbrainz_submit)[:300])
+        # Write Error JSON to a file for better Debug
+        with open("error.json", "w") as file:
+            file.writelines(listenbrainz_submit)
         sys.exit()
     time.sleep(timeout)
     return 0

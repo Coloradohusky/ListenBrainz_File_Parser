@@ -3,21 +3,21 @@
 # (e)y(e)s w/o a %brain% (Eternal Home) should return Eternal Home
 # Mr. Self Destruct (The Downward Spiral (deluxe edition)) should return The Downward Spiral (deluxe edition)
 
-from .argparser import parse_args
+from argparser import parse_args
 import json
 import os
 import sqlite3
 import pandas as pd
 
-from .parse.jellyfin import jellyfin_to_ods
-from .parse.lastfm import lastfm_to_ods
-from .parse.rockbox import rockbox_to_ods
-from .parse.tautulli import tautulli_to_ods
-from .submit.submit import import_listens
-
+from parse.jellyfin import jellyfin_to_ods
+from parse.lastfm import lastfm_to_ods
+from parse.rockbox import rockbox_to_ods
+from parse.tautulli import tautulli_to_ods
+from submit.submit import import_listens
+from parse.spotify import spotify_to_ods
 
 def get_version():
-    return "0.0.4"
+    return "0.0.5"
 
 
 def set_config(config):
@@ -73,6 +73,10 @@ def detect_filetype(file, api_token, max_batch, max_total, timeout):
     elif stripped_file.startswith('scrobbles-'):
         media_player = 'Last.FM'
         ods = lastfm_to_ods(file)
+    elif stripped_file.startswith('endsong_'):
+        media_player = 'Spotify'
+        print("Spotify")
+        ods = spotify_to_ods(file)
     elif stripped_file.endswith('.log'):
         media_player = 'RockBox'
         ods = rockbox_to_ods(file)
