@@ -3,18 +3,18 @@
 # (e)y(e)s w/o a %brain% (Eternal Home) should return Eternal Home
 # Mr. Self Destruct (The Downward Spiral (deluxe edition)) should return The Downward Spiral (deluxe edition)
 
-from argparser import parse_args
+from .argparser import parse_args
 import json
 import os
 import sqlite3
 import pandas as pd
 
-from parse.jellyfin import jellyfin_to_ods
-from parse.lastfm import lastfm_to_ods
-from parse.rockbox import rockbox_to_ods
-from parse.tautulli import tautulli_to_ods
-from submit.submit import import_listens
-from parse.spotify import spotify_to_ods
+from .parse.jellyfin import jellyfin_to_ods
+from .parse.lastfm import lastfm_to_ods
+from .parse.rockbox import rockbox_to_ods
+from .parse.tautulli import tautulli_to_ods
+from .submit.submit import import_listens
+from .parse.spotify import spotify_to_ods
 
 def get_version():
     return "0.0.5"
